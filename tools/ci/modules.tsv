@@ -1,0 +1,2 @@
+# Module registry for CI. A module adds its row in its scaffold commit.
+# Columns (tab-separated): module path, test command run inside that path.
