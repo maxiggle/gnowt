@@ -22,6 +22,7 @@ app process at the moment of signing.
 
 | Module | Path | Language | Depends on | Published to |
 |---|---|---|---|---|
+| `gno_dart` | `packages/gno_dart` | Dart | none | pub.dev |
 
 Dependencies run one way: the app depends on the packages, and no package
 depends on the app.

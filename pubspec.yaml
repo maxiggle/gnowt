@@ -5,7 +5,8 @@ environment:
   sdk: ^3.11.0
 
 # Each module joins the workspace in its scaffold commit.
-workspace: []
+workspace:
+  - packages/gno_dart
 
 dev_dependencies:
   melos: ^8.10.1

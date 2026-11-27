@@ -1,0 +1,16 @@
+name: gno_dart
+description: >-
+  Pure Dart SDK for gno.land: RPC reads, keys, amino encoding, and
+  transaction signing and broadcasting, with no Go runtime.
+version: 0.0.0
+
+environment:
+  sdk: ^3.11.0
+
+resolution: workspace
+
+dependencies:
+
+dev_dependencies:
+  lints: ^6.0.0
+  test: ^1.25.6
