@@ -5,12 +5,12 @@ import 'package:gnowt_store/gnowt_store_method_channel.dart';
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
-  MethodChannelGnowtStore platform = MethodChannelGnowtStore();
-  const MethodChannel channel = MethodChannel('gnowt_store');
+  final platform = MethodChannelGnowtStore();
+  const channel = MethodChannel('gnowt_store');
 
   setUp(() {
     TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
-        .setMockMethodCallHandler(channel, (MethodCall methodCall) async {
+        .setMockMethodCallHandler(channel, (methodCall) async {
           return '42';
         });
   });

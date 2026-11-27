@@ -1,7 +1,7 @@
+import 'package:gnowt_store/gnowt_store_method_channel.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 
-import 'gnowt_store_method_channel.dart';
-
+/// The interface that platform implementations of gnowt_store extend.
 abstract class GnowtStorePlatform extends PlatformInterface {
   /// Constructs a GnowtStorePlatform.
   GnowtStorePlatform() : super(token: _token);
@@ -23,6 +23,7 @@ abstract class GnowtStorePlatform extends PlatformInterface {
     _instance = instance;
   }
 
+  /// Returns the host platform version reported by the native side.
   Future<String?> getPlatformVersion() {
     throw UnimplementedError('platformVersion() has not been implemented.');
   }

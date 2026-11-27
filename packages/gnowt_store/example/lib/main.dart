@@ -1,6 +1,6 @@
-import 'package:flutter/material.dart';
 import 'dart:async';
 
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:gnowt_store/gnowt_store.dart';
 
@@ -22,7 +22,7 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
-    initPlatformState();
+    unawaited(initPlatformState());
   }
 
   // Platform messages are asynchronous, so we initialize in an async method.

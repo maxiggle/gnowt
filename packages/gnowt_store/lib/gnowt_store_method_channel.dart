@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 
-import 'gnowt_store_platform_interface.dart';
+import 'package:gnowt_store/gnowt_store_platform_interface.dart';
 
 /// An implementation of [GnowtStorePlatform] that uses method channels.
 class MethodChannelGnowtStore extends GnowtStorePlatform {
