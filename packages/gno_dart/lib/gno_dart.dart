@@ -1,8 +1,4 @@
-/// Support for doing something awesome.
-///
-/// More dartdocs go here.
+/// Pure Dart SDK for gno.land.
 library;
 
 export 'src/gno_dart_base.dart';
-
-// TODO: Export any libraries intended for clients of this package.
