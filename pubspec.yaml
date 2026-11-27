@@ -7,6 +7,8 @@ environment:
 # Each module joins the workspace in its scaffold commit.
 workspace:
   - packages/gno_dart
+  - packages/gnowt_store
+  - packages/gnowt_store/example
 
 dev_dependencies:
   melos: ^8.10.1
