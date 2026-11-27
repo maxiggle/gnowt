@@ -1,0 +1,27 @@
+# Dart / Flutter
+.dart_tool/
+build/
+.flutter-plugins
+.flutter-plugins-dependencies
+*.iml
+.idea/
+coverage/
+
+# Node (commitlint)
+node_modules/
+
+# Secrets: environment files, keys and keystores never enter the repo
+.env
+.env.*
+!.env.example
+*.jks
+*.keystore
+*.p12
+*.pem
+*.key
+key.properties
+*.mobileprovision
+gnokey-home/
+
+# OS
+.DS_Store
