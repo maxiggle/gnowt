@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+# Blocks commits that contain unformatted code.
+# Enable once per clone: git config core.hooksPath tools/git-hooks
+set -euo pipefail
+
+# gno installs into the Go bin directory, which GUI git clients often miss.
+export PATH="$PATH:$HOME/go/bin"
+
+exec "$(git rev-parse --show-toplevel)/tools/format/format_check.sh"
