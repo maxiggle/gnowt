@@ -2,3 +2,4 @@
 # Columns (tab-separated): module path, test command run inside that path.
 packages/gno_dart	dart test
 packages/gnowt_store	flutter test
+contracts/vault	if ls *.gno >/dev/null 2>&1; then gno test .; else echo "no gno files yet"; fi
