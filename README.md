@@ -25,6 +25,7 @@ app process at the moment of signing.
 | `gno_dart` | `packages/gno_dart` | Dart | none | pub.dev |
 | `gnowt_store` (GNS) | `packages/gnowt_store` | Dart, Swift, Kotlin | none | pub.dev |
 | vault realm | `contracts/vault` | Gno | gno.land stdlib | onyx-1 |
+| wallet app | `apps/wallet` | Flutter | `gno_dart`, `gnowt_store` | demo build only |
 
 Dependencies run one way: the app depends on the packages, and no package
 depends on the app.

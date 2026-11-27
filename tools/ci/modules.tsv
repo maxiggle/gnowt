@@ -3,3 +3,4 @@
 packages/gno_dart	dart test
 packages/gnowt_store	flutter test
 contracts/vault	if ls *.gno >/dev/null 2>&1; then gno test .; else echo "no gno files yet"; fi
+apps/wallet	flutter test
