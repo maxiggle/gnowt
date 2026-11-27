@@ -9,7 +9,7 @@ export default {
       'always',
       [
         'gno-dart',
-        'keystore',
+        'gnowt-store',
         'vault-realm',
         'wallet-app',
         'tools',

@@ -7,6 +7,9 @@ for every signature. Built for the Gnome Tavern Hackathon.
 Source of truth: "gnowt: project spec and engineering rules" (Nov 25, 2026). This file
 condenses it; when they disagree, the spec wins — flag the conflict.
 
+Agreed deviations from the spec:
+- `variance_keystore` is renamed `gnowt_store` (GNS), commit scope `gnowt-store`.
+
 ## How to work
 
 Use the `andrej-karpathy-skills:karpathy-guidelines` skill whenever writing, reviewing or
@@ -44,7 +47,7 @@ Internal submit **Dec 15**, hackathon deadline Dec 18, 2026.
 ```
 apps/wallet/                  Flutter app (iOS + Android)          scope: wallet-app
 packages/gno_dart/            Pure Dart Gno SDK                    scope: gno-dart
-packages/variance_keystore/   Flutter plugin, hardware-wrapped keys scope: keystore
+packages/gnowt_store/         Flutter plugin (GNS), hardware-wrapped seeds scope: gnowt-store
 contracts/vault/              Gno realm on onyx-1                  scope: vault-realm
 tools/format/                 format.sh, format_check.sh           scope: tools
 tools/git-hooks/              pre-commit, commit-msg               scope: tools
@@ -55,7 +58,7 @@ pubspec.yaml                  Dart workspace root (Melos)          scope: repo
 
 Structure rules:
 - `gno_dart` never imports Flutter.
-- `variance_keystore` knows nothing about gno.land: it encrypts, decrypts and wipes
+- `gnowt_store` (GNS) knows nothing about gno.land: it encrypts, decrypts and wipes
   secrets only.
 - The app joins them. Signing reaches the SDK through a `TransactionSigner` interface;
   the SDK never touches key storage.
@@ -79,7 +82,7 @@ module's tests.
 <footers: BREAKING CHANGE:, Refs:, Co-authored-by:>
 ```
 
-- Scope is required: `gno-dart`, `keystore`, `vault-realm`, `wallet-app`, `tools`,
+- Scope is required: `gno-dart`, `gnowt-store`, `vault-realm`, `wallet-app`, `tools`,
   `repo`, `ci` (`release` only for the release commit).
 - Types: `feat` (minor), `fix`/`perf` (patch), `refactor`, `test`, `docs`, `build`,
   `ci`, `chore`, `style`, `revert`. Breaking: `!` after scope + `BREAKING CHANGE:` footer.
@@ -130,7 +133,7 @@ Every name says what it is or does without reading its body.
 - Dart: `very_good_analysis` (fall back to `lints` recommended if too strict), zero
   warnings.
 - Functions do one thing; past ~40 lines, extract the second thing.
-- Public APIs in `gno_dart` and `variance_keystore` have doc comments with one usage
+- Public APIs in `gno_dart` and `gnowt_store` have doc comments with one usage
   example each.
 - Errors are typed, never bare strings: `AccountNotFoundException`,
   `BiometricCancelledException`, `SequenceMismatchError`.
@@ -142,7 +145,7 @@ Every name says what it is or does without reading its body.
 - Start at `0.0.0` in the scaffold commit, `0.1.0` on first `feat`. Before `1.0.0`, a
   breaking change bumps minor. No `1.0.0` during the hackathon.
 - Only commits scoped to a module bump that module.
-- Tags: `gno_dart-v0.1.0`, `variance_keystore-v0.1.0`, `vault-realm-v0.1.0`,
+- Tags: `gno_dart-v0.1.0`, `gnowt_store-v0.1.0`, `vault-realm-v0.1.0`,
   `wallet-v0.1.0`. Wallet version is `0.1.0+1` (build number after `+`).
 - Realm: deployed code is immutable, so breaking changes ship as a new package path
   (`gno.land/r/<namespace>/vault/v2`); version also in `contracts/vault/VERSION`.
@@ -154,7 +157,7 @@ Every name says what it is or does without reading its body.
 | Module | Unit | Integration | Tooling |
 |---|---|---|---|
 | gno_dart | address derivation, amino JSON, signing | read + broadcast on local `gnodev` | `dart test` |
-| variance_keystore | Dart API with fake platform | encrypt/decrypt/wipe on device or simulator | `flutter test`, XCTest, JUnit |
+| gnowt_store | Dart API with fake platform | encrypt/decrypt/wipe on device or simulator | `flutter test`, XCTest, JUnit |
 | vault realm | limits, guardian approval, `Render()` | deploy + call on `gnodev` | `gno test` |
 | wallet app | view models | one end-to-end flow on device | `flutter test`, `integration_test` |
 
@@ -184,6 +187,6 @@ the time it takes to sign.
 5. Test mnemonics are the only secrets allowed in the repo: in `test/fixtures/`,
    marked `TEST ONLY`, never holding real funds.
 6. Keys, `.env` files and keystores are gitignored; gitleaks runs in CI.
-7. Security-sensitive changes (keystore native code, signing in `gno_dart`) get a
+7. Security-sensitive changes (gnowt_store native code, signing in `gno_dart`) get a
    second read before merging — point them out to the user explicitly.
 8. The README states the threat model: hardware-protected, not hardware-signed.
