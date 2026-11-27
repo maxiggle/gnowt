@@ -1,0 +1,42 @@
+name: gnowt_workspace
+publish_to: none
+
+environment:
+  sdk: ^3.11.0
+
+# Each module joins the workspace in its scaffold commit.
+workspace: []
+
+dev_dependencies:
+  melos: ^8.10.1
+
+melos:
+  command:
+    version:
+      branch: main
+      # Changelogs and tags are per module, never workspace-wide.
+      workspaceChangelog: false
+      message: "chore(release): publish packages"
+
+  scripts:
+    format:
+      run: tools/format/format.sh
+      description: Format every Dart, Swift, Kotlin and Gno file.
+    format:check:
+      run: tools/format/format_check.sh
+      description: Fail if any file is unformatted.
+    analyze:
+      run: dart analyze --fatal-infos
+      description: Analyze every workspace package with zero warnings allowed.
+    test:dart:
+      exec: dart test
+      description: Run tests of the pure Dart packages.
+      packageFilters:
+        flutter: false
+        dirExists: test
+    test:flutter:
+      exec: flutter test
+      description: Run tests of the Flutter packages and apps.
+      packageFilters:
+        flutter: true
+        dirExists: test
