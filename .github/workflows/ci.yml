@@ -1,0 +1,99 @@
+name: ci
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+env:
+  FLUTTER_VERSION: 3.41.3
+  GNO_VERSION: v1.8.0
+  GITLEAKS_VERSION: 8.30.1
+
+jobs:
+  commitlint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+          cache: npm
+      - run: npm ci
+      - name: Lint every commit in the range
+        env:
+          BASE_COMMIT: ${{ github.event.pull_request.base.sha || github.event.before }}
+          HEAD_COMMIT: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: |
+          if [[ "$BASE_COMMIT" =~ ^0+$ ]]; then
+            BASE_COMMIT="$(git rev-list --max-parents=0 "$HEAD_COMMIT")"
+          fi
+          npx commitlint --from "$BASE_COMMIT" --to "$HEAD_COMMIT" --verbose
+
+  gitleaks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Install gitleaks
+        run: |
+          curl -sSfL "https://github.com/gitleaks/gitleaks/releases/download/v${GITLEAKS_VERSION}/gitleaks_${GITLEAKS_VERSION}_linux_x64.tar.gz" \
+            | tar -xz -C /usr/local/bin gitleaks
+      - name: Scan full history for secrets
+        run: gitleaks git --redact --verbose .
+
+  format-and-analyze:
+    # macOS because swift-format ships with Xcode.
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          cache: true
+      - uses: actions/setup-go@v5
+        with:
+          go-version: stable
+      - name: Install gno
+        run: |
+          git clone --depth 1 --branch "$GNO_VERSION" https://github.com/gnolang/gno.git "$RUNNER_TEMP/gno"
+          make -C "$RUNNER_TEMP/gno" install.gno
+          echo "$(go env GOPATH)/bin" >> "$GITHUB_PATH"
+      - name: Install ktlint
+        run: brew install ktlint
+      - run: tools/format/format_check.sh
+      - run: flutter pub get
+      - name: Analyze with zero warnings
+        run: dart analyze --fatal-infos
+
+  test-each-commit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          cache: true
+      - uses: actions/setup-go@v5
+        with:
+          go-version: stable
+      - name: Install gno
+        run: |
+          git clone --depth 1 --branch "$GNO_VERSION" https://github.com/gnolang/gno.git "$RUNNER_TEMP/gno"
+          make -C "$RUNNER_TEMP/gno" install.gno
+          echo "$(go env GOPATH)/bin" >> "$GITHUB_PATH"
+      - name: Test changed modules at every commit
+        env:
+          BASE_COMMIT: ${{ github.event.pull_request.base.sha || github.event.before }}
+          HEAD_COMMIT: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: |
+          if [[ "$BASE_COMMIT" =~ ^0+$ ]]; then
+            BASE_COMMIT="$(git rev-list --max-parents=0 "$HEAD_COMMIT")"
+          fi
+          cp tools/ci/test_each_commit.sh "$RUNNER_TEMP/test_each_commit.sh"
+          "$RUNNER_TEMP/test_each_commit.sh" "$BASE_COMMIT" "$HEAD_COMMIT"
